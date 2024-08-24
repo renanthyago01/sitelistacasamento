@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Renan e Fernanda</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div>
+        <img src="{{url_for('static', filename='img/convite.jpg')}}" alt="convite de cha de casa" class="img-fluida">
+        <img src="{{url_for('static', filename='img/renan e fernanda texto.jpg')}}" class="img-fluida">
+        <img src="{{url_for('static', filename='img/Foto casal.jpg')}}" alt="foto do casal" class="img-fluida">
+        <img src="{{url_for('static', filename='img/texto convite secundario.jpg')}}" alt="texto convite" class="img-fluida">
+        <div id="rodape">
+            <h3 class="txt-c">Local do evento</h3>
+            <p class="txt-c">
+                Parque bernardo elis,</br>
+                Goiânia - Goiás
+            </p>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3821.3157007401!2d-49.32158252495503!3d-16.711092446194925!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935ef6f390eb474f%3A0x2d273fabad588a97!2sParque%20Bernardo%20%C3%89lis%20de%20Goi%C3%A2nia!5e0!3m2!1spt-BR!2sbr!4v1723952348959!5m2!1spt-BR!2sbr" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="iframegmaps"></iframe>
+        </div>
+    </div>
+
+    <h1>Lista de Produtos</h1>
+    <div id="lista-produtos">
+        {% for produto in produtos %}
+        <div class="produto-item">
+            <img src="{{ produto.imagem }}" alt="{{ produto.nome }}" class="produto-imagem">
+            <button 
+                class="produto-btn" 
+                data-id="{{ produto.id }}" 
+                {% if not produto.disponivel %}disabled{% endif %}>
+                {{ produto.nome }} {% if not produto.disponivel %} - Indisponível{% endif %}
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        $(document).ready(function(){
+            $('.produto-btn').click(function(){
+                const produtoId = $(this).data('id');
+                
+                $.ajax({
+                    url: '/selecionar_produto',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ id: produtoId }),
+                    success: function(response){
+                        // Desativa o botão e marca como indisponível
+                        $(`button[data-id='${produtoId}']`).attr('disabled', true).text("Indisponível");
+                    }
+                });
+            });
+        });
+    </script>
+    </div>
+
+</body>
+</html>
